@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ORDER_RECEIVED
+  ORDER_FULFILLED
+}
+
+model Language {
+  id Int @id @default(autoincrement())
+  name String @unique
+  languageCode String
+
+  dictionary Dictionary[]
+}
+
+model Dictionary {
+  id Int @id @default(autoincrement())
+  component String
+  key String
+  translation String
+  languageId Int
+
+  language Language @relation(fields: [languageId], references: [id])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @unique
+  products Product[]
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+  email String @unique
+  zip String
+  country String
+  city String
+  street String
+  housenumber String
+
+  orders Order[]
+  @@index([username, email])
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String @unique
+  description String
+  slug String @unique
+  price Float
+  categoryId Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+  orders ProductOrder[]
+  @@index([slug])
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+  userId Int
+  products ProductOrder[]
+  date DateTime @default(now())
+  status Status
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model ProductOrder {
+  orderId Int
+  productId Int
+  price Float
+
+  order Order @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  @@id([orderId, productId])
+
+}
+
+// model Post {
+//   id Int @id @default(autoincrement())
+//   title String
+//   owner String
+// }

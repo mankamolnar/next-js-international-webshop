@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typesafe-i18n": "typesafe-i18n"
   },
   "dependencies": {
+    "@prisma/client": "^4.12.0",
     "@types/node": "18.15.11",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
@@ -17,6 +19,11 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-intl": "^6.4.1",
+    "typesafe-i18n": "^5.24.3",
     "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "prisma": "^4.12.0"
   }
 }
