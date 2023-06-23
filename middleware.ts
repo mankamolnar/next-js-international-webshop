@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 
 const PUBLIC_FILE = /\.(.*)$/
 
-export async function middleware(req: NextRequest) {
+const protectedPages = [
+  "/protected/",
+  "/dashboard",
+  "/admin/"
+];
+
+export async function middleware(req: NextRequestWithAuth) {
+  console.log(req.cookies.get("next-auth.session-token"));
+
+  if (protectedPages.includes(req.nextUrl.pathname)
+        && !req.cookies.get("next-auth.session-token")) {
+    
+    return withAuth(req);
+  }
+  
   if (req.nextUrl.pathname.startsWith('/_next') 
       || req.nextUrl.pathname.includes('/api/') 
       || PUBLIC_FILE.test(req.nextUrl.pathname)

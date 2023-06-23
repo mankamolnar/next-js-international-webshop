@@ -1,3 +1,10 @@
+import useLocale from "../custom_hooks/useLocale";
+import Link from "next/link";
+import LanguageIcon from "./LanguageIcon";
+import LoginButton from "./LoginButton";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../app/api/auth/[...nextauth]/route";
+
 const fetchLanguages = async () => {
   const rawData = await fetch(`${process.env.API_DOMAIN}api/get-languages`);
   return await rawData.json();
@@ -9,12 +16,13 @@ const fetchNavbar = async (language : string) => {
 }
 
 const NavBar = async (props : any) => {
+  const { parseDictionary } = useLocale(props.currentLanguage);
   const languagesPromise = fetchLanguages();
   const navbarItemsPromise = fetchNavbar(props.currentLanguage);
+  const sessionPromise = getServerSession(authOptions);
 
-  const [languages, navbarItems] = await Promise.all([languagesPromise, navbarItemsPromise]);
-
-  console.log(languages, navbarItems);
+  const [languages, navbarItems, session] = await Promise.all([languagesPromise, navbarItemsPromise, sessionPromise]);
+  const navbarItemsDictionary = parseDictionary(navbarItems);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -25,16 +33,30 @@ const NavBar = async (props : any) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {
-              navbarItems.map((navbarItem : any, index : number) => (
-                <li key={"navbarItem"+index} className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="#">{navbarItem.translation}</a>
-                </li>
-              ))
-            }
+            
+            <li className="nav-item">
+              <Link href={`/${props.currentLanguage}/products/`} className="nav-link active" aria-current="page">{navbarItemsDictionary.get("products")}</Link>
+            </li>
+
+            <li className="nav-item">
+              <Link href={`/${props.currentLanguage}/basket/`} className="nav-link active" aria-current="page">{navbarItemsDictionary.get("basket")}</Link>
+            </li>
+
+            <li className="nav-item">
+              <Link href={`/${props.currentLanguage}/contact/`} className="nav-link active" aria-current="page">{navbarItemsDictionary.get("contact")}</Link>
+            </li>
+
+            <li className="nav-item">
+              <LoginButton session={session} />
+            </li>
+
           </ul>
           <form className="d-flex">
-            gobmok
+            {
+              languages.map((language : any, index : number) => (
+                <LanguageIcon key={"language" + index} nextLanguage={language} currentLanguage={props.currentLanguage} />
+              ))
+            }
           </form>
         </div>
       </div>
