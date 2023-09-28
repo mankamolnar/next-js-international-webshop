@@ -17,7 +17,7 @@ interface LanguageParams {
 }
 
 export default async function Home({params} : LanguageProps) {
-  console.log(params);
+  // console.log(params);
 
   return (
     <main>

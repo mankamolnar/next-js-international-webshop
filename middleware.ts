@@ -1,20 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+import { JWTDecodeParams, decode } from 'next-auth/jwt';
 
 const PUBLIC_FILE = /\.(.*)$/
 
 const protectedPages = [
-  "/protected/",
-  "/dashboard",
-  "/admin/"
+  {path: "/protected/", role: "CUSTOMER" }
 ];
 
-export async function middleware(req: NextRequestWithAuth) {
-  console.log(req.cookies.get("next-auth.session-token"));
+const isProtected = (req: NextRequestWithAuth) : string | boolean => {
+  for (const protectedPage of protectedPages) {
+    if (protectedPage.path == req.nextUrl.pathname
+        || (protectedPage.path.includes("**") && req.nextUrl.pathname.startsWith(protectedPage.path))) {
+      
+      return protectedPage.role;
+    }
+  }
 
-  if (protectedPages.includes(req.nextUrl.pathname)
-        && !req.cookies.get("next-auth.session-token")) {
-    
+  return false;
+}
+
+export async function middleware(req: NextRequestWithAuth) {
+
+  const protectionRole = isProtected(req);
+
+  if (protectionRole) {
+    const tokenObject : JWTDecodeParams = {
+      token: req.cookies.get("next-auth.session-token")?.value,
+      secret: process.env.NEXTAUTH_SECRET ?? ""
+    }
+
+    if (!tokenObject.token) {
+      return withAuth(req);
+      
+    } else {
+      const token = await decode(tokenObject);
+
+      if (protectionRole !== token.role) {
+        return NextResponse.redirect(
+          new URL('/auth/login', req.url)
+        )
+      }
+    }
+
     return withAuth(req);
   }
   

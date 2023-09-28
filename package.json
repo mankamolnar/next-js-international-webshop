@@ -10,21 +10,29 @@
     "typesafe-i18n": "typesafe-i18n"
   },
   "dependencies": {
-    "@prisma/client": "^4.12.0",
-    "@types/node": "18.15.11",
-    "@types/react": "18.0.37",
-    "@types/react-dom": "18.0.11",
-    "eslint": "8.38.0",
-    "eslint-config-next": "13.3.0",
-    "next": "13.3.0",
-    "next-auth": "^4.22.1",
+    "@prisma/client": "^5.0.0",
+    "@reduxjs/toolkit": "^1.9.5",
+    "@types/node": "20.4.5",
+    "@types/react": "18.2.18",
+    "@types/react-dom": "18.2.7",
+    "bcryptjs-react": "^2.4.6",
+    "eslint": "8.46.0",
+    "eslint-config-next": "13.4.12",
+    "isaac": "^0.0.5",
+    "next": "13.4.12",
+    "next-auth": "^4.22.3",
+    "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-intl": "^6.4.1",
-    "typesafe-i18n": "^5.24.3",
-    "typescript": "5.0.4"
+    "react-intl": "^6.4.4",
+    "react-redux": "^8.1.2",
+    "typesafe-i18n": "^5.26.0",
+    "typescript": "5.1.6"
   },
   "devDependencies": {
-    "prisma": "^4.12.0"
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.14",
+    "prisma": "^5.0.0",
+    "tailwindcss": "^3.3.3"
   }
 }

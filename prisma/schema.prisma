@@ -15,6 +15,11 @@ enum Status {
   ORDER_FULFILLED
 }
 
+enum Roles {
+  ADMIN
+  CUSTOMER
+}
+
 model Language {
   id Int @id @default(autoincrement())
   name String @unique
@@ -49,6 +54,7 @@ model User {
   city String
   street String
   housenumber String
+  role Roles @default(CUSTOMER)
 
   orders Order[]
   @@index([username, email])
